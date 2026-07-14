@@ -1,8 +1,28 @@
-from fastapi import FastAPI
+from collections.abc import AsyncIterator
+from contextlib import asynccontextmanager
 
-app = FastAPI(title="Sonar Lite API")
+from fastapi import Depends, FastAPI
+from sqlalchemy import text
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.core.db import engine, get_db
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI) -> AsyncIterator[None]:
+    yield
+    await engine.dispose()
+
+
+app = FastAPI(title="Sonar Lite API", lifespan=lifespan)
 
 
 @app.get("/health")
 async def health() -> dict[str, str]:
+    return {"status": "ok"}
+
+
+@app.get("/health/db")
+async def health_db(db: AsyncSession = Depends(get_db)) -> dict[str, str]:
+    await db.execute(text("SELECT 1"))
     return {"status": "ok"}
