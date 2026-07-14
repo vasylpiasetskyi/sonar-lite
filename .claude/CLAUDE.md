@@ -18,13 +18,13 @@ Never jump straight into coding without steps 1–3.
 
 ## Where to find things
 
-- Project context: `PROJECT.md`, `BUSINESS_RULES.md`, `ARCHITECTURE.md`, `ROADMAP.md`, `TASKS.md` at repo root.
+- Project context: `docs/PROJECT.md`, `docs/BUSINESS_RULES.md`, `docs/ARCHITECTURE.md`, `docs/ROADMAP.md`, `docs/TASKS.md`.
 - Always-on constraints: `.claude/rules/*.md` — read the ones relevant to what you're touching before you start.
 - Domain reference notes: `.claude/skills/*.md` — consult the relevant one when working in that area. These are notes, not invokable commands.
 
 ## Architecture reminder
 
-No business logic in routers. Domain split is `metrics / analytics / ai / dashboard`. See `ARCHITECTURE.md`.
+No business logic in routers. Domain split is `metrics / analytics / ai / dashboard`. See `docs/ARCHITECTURE.md`.
 
 ## Docker reminder
 

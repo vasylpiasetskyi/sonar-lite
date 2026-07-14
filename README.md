@@ -4,9 +4,9 @@ A simplified AI-powered health platform, built as a simulation of working inside
 
 **Status:** Phase 0 — documentation & `.claude` configuration only. No application code yet.
 
-- What this project is and why: see [PROJECT.md](PROJECT.md)
-- Business rules and thresholds: see [BUSINESS_RULES.md](BUSINESS_RULES.md)
-- Target architecture: see [ARCHITECTURE.md](ARCHITECTURE.md)
-- What's next: see [ROADMAP.md](ROADMAP.md) and [TASKS.md](TASKS.md)
+- What this project is and why: see [docs/PROJECT.md](docs/PROJECT.md)
+- Business rules and thresholds: see [docs/BUSINESS_RULES.md](docs/BUSINESS_RULES.md)
+- Target architecture: see [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
+- What's next: see [docs/ROADMAP.md](docs/ROADMAP.md) and [docs/TASKS.md](docs/TASKS.md)
 
 Once Sprint 1 ships, this README will be rewritten to cover Architecture, Features, How to Run, and Trade-offs.
