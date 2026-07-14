@@ -1,5 +1,6 @@
 # --- Project-specific ---
 docs/
+.superpowers/
 
 # --- Environment / secrets ---
 .env
