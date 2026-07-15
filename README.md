@@ -12,6 +12,7 @@ FastAPI backend, layered `router → service → repository → PostgreSQL`, no 
 
 - `POST /metrics`, `GET /metrics` (filter + pagination), `GET /metrics/{id}`, `PATCH /metrics/{id}`, `DELETE /metrics/{id}` — CRUD for the 5 tracked health metrics (weight, sleep, heart rate, steps, water). See [docs/BUSINESS_RULES.md](docs/BUSINESS_RULES.md).
 - `GET /health`, `GET /health/db` — liveness and DB-connectivity checks.
+- `GET /dashboard` — latest reading, 7d/30d averages + trend, and an overall health score per metric, for the demo user. `ai_summary` is always `null` until Sprint 3.
 
 ## How to Run
 

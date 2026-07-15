@@ -19,9 +19,9 @@
 
 ## Sprint 2 — Dashboard & Analytics
 
-- [ ] 7d/30d aggregates and trend calculation
-- [ ] Health score calculation
-- [ ] Dashboard composition endpoint
+- [x] 7d/30d aggregates and trend calculation
+- [x] Health score calculation
+- [x] Dashboard composition endpoint
 
 ## Sprint 3 — AI
 
