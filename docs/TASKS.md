@@ -14,8 +14,8 @@
 
 ## Sprint 1 — Health Metrics CRUD
 
-- [ ] Backend project scaffold (FastAPI, SQLAlchemy, Alembic, Postgres via docker compose)
-- [ ] Metrics domain: models, schemas, repository, service, router
+- [x] Backend project scaffold (FastAPI, SQLAlchemy, Alembic, Postgres via docker compose)
+- [x] Metrics domain: models, schemas, repository, service, router
 
 ## Sprint 2 — Dashboard & Analytics
 
