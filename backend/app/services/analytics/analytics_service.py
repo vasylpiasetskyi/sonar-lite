@@ -4,6 +4,7 @@ from datetime import datetime, timedelta, timezone
 from app.models.metric import MetricType
 from app.repositories.metric_repository import MetricRepository
 from app.schemas.dashboard import MetricAnalytics, Trend
+from app.schemas.recommendation import Recommendation
 
 TREND_STABLE_BAND_PCT = 2.0
 
@@ -116,3 +117,48 @@ class AnalyticsService:
     @staticmethod
     def _weight_stability_score(pct_change: float) -> float:
         return 100 if abs(pct_change) <= 3 else 60
+
+    def evaluate_recommendations(
+        self, metrics: dict[MetricType, MetricAnalytics]
+    ) -> list[Recommendation]:
+        recommendations: list[Recommendation] = []
+
+        sleep = metrics.get(MetricType.SLEEP)
+        if sleep is not None and sleep.avg_7d is not None and sleep.avg_7d < 6:
+            recommendations.append(
+                Recommendation(
+                    metric_type=MetricType.SLEEP, message="Improve sleep hygiene / schedule"
+                )
+            )
+
+        heart_rate = metrics.get(MetricType.HEART_RATE)
+        if heart_rate is not None and heart_rate.avg_7d is not None and heart_rate.avg_7d > 100:
+            recommendations.append(
+                Recommendation(
+                    metric_type=MetricType.HEART_RATE,
+                    message="Recommend consulting a healthcare professional",
+                )
+            )
+
+        water = metrics.get(MetricType.WATER)
+        if water is not None and water.avg_7d is not None and water.avg_7d < 1.5:
+            recommendations.append(
+                Recommendation(metric_type=MetricType.WATER, message="Increase hydration")
+            )
+
+        steps = metrics.get(MetricType.STEPS)
+        if steps is not None and steps.avg_7d is not None and steps.avg_7d < 5000:
+            recommendations.append(
+                Recommendation(metric_type=MetricType.STEPS, message="Increase daily activity")
+            )
+
+        weight = metrics.get(MetricType.WEIGHT)
+        if weight is not None and weight.trend is not None and abs(weight.trend.pct_change) > 3:
+            recommendations.append(
+                Recommendation(
+                    metric_type=MetricType.WEIGHT,
+                    message="Monitor nutrition, flag for attention",
+                )
+            )
+
+        return recommendations
