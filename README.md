@@ -2,7 +2,7 @@
 
 A simplified AI-powered health platform, built as a simulation of working inside an AI-native HealthTech startup (Sonar Health) with Claude Code as an AI pair-programmer.
 
-**Status:** Sprint 1 complete — Health Metrics CRUD backend is live.
+**Status:** Sprint 3 complete — Health Metrics CRUD, Dashboard & Analytics, and AI summary generation are live.
 
 ## Architecture
 
@@ -12,7 +12,8 @@ FastAPI backend, layered `router → service → repository → PostgreSQL`, no 
 
 - `POST /metrics`, `GET /metrics` (filter + pagination), `GET /metrics/{id}`, `PATCH /metrics/{id}`, `DELETE /metrics/{id}` — CRUD for the 5 tracked health metrics (weight, sleep, heart rate, steps, water). See [docs/BUSINESS_RULES.md](docs/BUSINESS_RULES.md).
 - `GET /health`, `GET /health/db` — liveness and DB-connectivity checks.
-- `GET /dashboard` — latest reading, 7d/30d averages + trend, and an overall health score per metric, for the demo user. `ai_summary` is always `null` until Sprint 3.
+- `GET /dashboard` — latest reading, 7d/30d averages + trend, and an overall health score per metric, for the demo user. `ai_summary` is always `null` here (see `POST /ai/summary` below).
+- `POST /ai/summary` — rule-based recommendations (always returned) plus an on-demand, LLM-generated summary. Uses a mock AI provider by default (no `OPENAI_API_KEY` configured yet); degrades gracefully to `ai_summary: null` with `ai_summary_error` set if generation fails, rather than failing the request.
 
 ## How to Run
 

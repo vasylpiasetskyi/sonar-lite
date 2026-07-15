@@ -25,8 +25,8 @@
 
 ## Sprint 3 — AI
 
-- [ ] Rule-based recommendation engine
-- [ ] AI prompt layer + structured AI summary endpoint
+- [x] Rule-based recommendation engine
+- [x] AI prompt layer + structured AI summary endpoint
 
 ## Sprint 4 — Charts & frontend
 
