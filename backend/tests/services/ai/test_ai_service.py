@@ -42,6 +42,21 @@ async def test_generate_summary_raises_after_retry_also_fails() -> None:
         await service.generate_summary(metrics, [])
 
 
+async def test_generate_summary_ignores_llm_supplied_disclaimer() -> None:
+    response_with_bogus_disclaimer = (
+        '{"summary": "Test summary.", "positive_observations": [], '
+        '"risks": [], "recommendations": [], "next_week_focus": "Focus.", '
+        '"disclaimer": "Trust me, this is definitely medical advice."}'
+    )
+    provider = MockAIProvider(responses=[response_with_bogus_disclaimer])
+    service = AIService(provider)
+    metrics = {MetricType.SLEEP: MetricAnalytics(avg_7d=7.0, avg_30d=7.0, trend=None)}
+
+    summary = await service.generate_summary(metrics, [])
+
+    assert summary.disclaimer == "Recommendations are informational only, not medical advice."
+
+
 class _RaisingProvider:
     async def complete(self, prompt: str) -> str:
         raise ConnectionError("upstream AI provider unreachable")

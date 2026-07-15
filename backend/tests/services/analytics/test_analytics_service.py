@@ -88,6 +88,20 @@ async def test_get_metric_analytics_trend_none_without_prior_window_data(db_sess
     assert result.trend is None
 
 
+def test_compute_trend_direction_just_inside_stable_band() -> None:
+    trend = AnalyticsService._compute_trend(avg_7d=101.9, avg_prior_7d=100.0)
+
+    assert trend is not None
+    assert trend.direction == "stable"
+
+
+def test_compute_trend_direction_just_outside_stable_band() -> None:
+    trend = AnalyticsService._compute_trend(avg_7d=102.1, avg_prior_7d=100.0)
+
+    assert trend is not None
+    assert trend.direction == "up"
+
+
 async def test_get_metric_analytics_all_none_without_any_data(db_session) -> None:
     repo = MetricRepository(db_session)
     service = AnalyticsService(repo)

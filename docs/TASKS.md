@@ -35,9 +35,10 @@
 
 ## Sprint 5 — Tests
 
-- [ ] Unit tests for services
-- [ ] API tests for routers
-- [ ] AI layer mocked in tests
+- [x] Unit tests for services — done incrementally via TDD since Sprint 1, not deferred to this sprint.
+- [x] API tests for routers — same, done incrementally since Sprint 1.
+- [x] AI layer mocked in tests — `MockAIProvider` used throughout; `OpenAIProvider`'s own test mocks the SDK client, no real network call anywhere in the suite.
+- [x] Edge-case sweep — closed the specific gaps flagged as Minor in Sprints 2-3 code review (PATCH validation boundary, migration column types/enum values, LLM-supplied-disclaimer-is-ignored regression guard, trend dead-band boundary). Backend suite: 88 tests.
 
 ## Sprint 6 — Authentication
 

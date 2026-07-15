@@ -46,6 +46,24 @@ async def test_create_metric_rejects_non_positive_value(db_session) -> None:
     app.dependency_overrides.clear()
 
 
+async def test_update_metric_rejects_non_positive_value(db_session) -> None:
+    async with await _client(db_session) as client:
+        create_response = await client.post(
+            "/metrics",
+            json={
+                "metric_type": "sleep",
+                "value": 7.0,
+                "recorded_at": datetime.now(timezone.utc).isoformat(),
+            },
+        )
+        metric_id = create_response.json()["id"]
+
+        response = await client.patch(f"/metrics/{metric_id}", json={"value": 0})
+
+    assert response.status_code == 422
+    app.dependency_overrides.clear()
+
+
 async def test_get_metric_returns_404_for_missing_id(db_session) -> None:
     async with await _client(db_session) as client:
         response = await client.get("/metrics/00000000-0000-0000-0000-000000000099")
