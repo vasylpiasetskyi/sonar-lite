@@ -7,12 +7,13 @@ from app.models.metric import MetricType
 from app.repositories.metric_repository import MetricRepository
 from app.schemas.metric import MetricCreate
 from app.services.analytics.analytics_service import AnalyticsService
+from tests.auth_helpers import create_test_user_id
 
 
 async def test_get_metric_analytics_computes_averages(db_session) -> None:
     repo = MetricRepository(db_session)
     service = AnalyticsService(repo)
-    user_id = uuid.uuid4()
+    user_id = await create_test_user_id(db_session)
     now = datetime.now(timezone.utc)
 
     await repo.create(
@@ -32,7 +33,7 @@ async def test_get_metric_analytics_computes_averages(db_session) -> None:
 async def test_get_metric_analytics_trend_up(db_session) -> None:
     repo = MetricRepository(db_session)
     service = AnalyticsService(repo)
-    user_id = uuid.uuid4()
+    user_id = await create_test_user_id(db_session)
     now = datetime.now(timezone.utc)
 
     await repo.create(
@@ -53,7 +54,7 @@ async def test_get_metric_analytics_trend_up(db_session) -> None:
 async def test_get_metric_analytics_trend_stable_within_dead_band(db_session) -> None:
     repo = MetricRepository(db_session)
     service = AnalyticsService(repo)
-    user_id = uuid.uuid4()
+    user_id = await create_test_user_id(db_session)
     now = datetime.now(timezone.utc)
 
     await repo.create(
@@ -74,7 +75,7 @@ async def test_get_metric_analytics_trend_stable_within_dead_band(db_session) ->
 async def test_get_metric_analytics_trend_none_without_prior_window_data(db_session) -> None:
     repo = MetricRepository(db_session)
     service = AnalyticsService(repo)
-    user_id = uuid.uuid4()
+    user_id = await create_test_user_id(db_session)
     now = datetime.now(timezone.utc)
 
     await repo.create(

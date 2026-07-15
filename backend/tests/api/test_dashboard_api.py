@@ -4,12 +4,16 @@ from httpx import ASGITransport, AsyncClient
 
 from app.core.db import get_db
 from app.main import app
+from tests.auth_helpers import create_test_user_token
 
 
 async def _client(db_session) -> AsyncClient:
     app.dependency_overrides[get_db] = lambda: db_session
+    token = await create_test_user_token(db_session)
     transport = ASGITransport(app=app)
-    return AsyncClient(transport=transport, base_url="http://test")
+    return AsyncClient(
+        transport=transport, base_url="http://test", headers={"Authorization": f"Bearer {token}"}
+    )
 
 
 async def test_get_dashboard_returns_full_contract_shape(db_session) -> None:
@@ -43,4 +47,14 @@ async def test_get_dashboard_reflects_created_metric(db_session) -> None:
     assert body["latest"]["steps"]["value"] == 9000.0
     assert body["metrics"]["steps"]["avg_7d"] == 9000.0
 
+    app.dependency_overrides.clear()
+
+
+async def test_get_dashboard_requires_authentication(db_session) -> None:
+    app.dependency_overrides[get_db] = lambda: db_session
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as client:
+        response = await client.get("/dashboard")
+
+    assert response.status_code == 401
     app.dependency_overrides.clear()

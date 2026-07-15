@@ -8,7 +8,7 @@ It is **not** a medical device and **not** a diagnostic tool. Every AI-generated
 
 ## User
 
-Single demo user for MVP (Sprints 1-5). No real registration flow — a fake or hardcoded auth is acceptable. Real authentication is deferred to Sprint 6 — see [ROADMAP.md](ROADMAP.md).
+Real accounts as of Sprint 6 — email + password registration/login, JWT bearer-token authentication. Every metric, dashboard, and AI summary is scoped to the authenticated user; there is no shared demo account anymore.
 
 ## Core value loop
 

@@ -42,7 +42,7 @@
 
 ## Sprint 6 — Authentication
 
-- [ ] User registration/login (real accounts, password hashing or OAuth)
-- [ ] Session/JWT-based request authentication
-- [ ] Replace `DEMO_USER_ID` with the authenticated user's id across services and routers
-- [ ] Migration plan for metrics currently recorded under the demo user
+- [x] User registration/login (email + password, bcrypt-hashed)
+- [x] JWT bearer-token request authentication
+- [x] Replace `DEMO_USER_ID` with the authenticated user's id across services and routers — the constant and its module no longer exist
+- [x] Old demo data deleted (confirmed disposable) rather than migrated — a fresh account replaces it

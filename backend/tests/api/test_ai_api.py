@@ -5,6 +5,7 @@ from app.core.db import get_db
 from app.main import app
 from app.services.ai.ai_service import AIService
 from app.services.ai.providers import MockAIProvider
+from tests.auth_helpers import create_test_user_token
 
 VALID_RESPONSE = (
     '{"summary": "Test summary.", "positive_observations": ["Good sleep."], '
@@ -15,8 +16,11 @@ VALID_RESPONSE = (
 
 async def _client(db_session) -> AsyncClient:
     app.dependency_overrides[get_db] = lambda: db_session
+    token = await create_test_user_token(db_session)
     transport = ASGITransport(app=app)
-    return AsyncClient(transport=transport, base_url="http://test")
+    return AsyncClient(
+        transport=transport, base_url="http://test", headers={"Authorization": f"Bearer {token}"}
+    )
 
 
 async def test_ai_summary_returns_recommendations_and_summary_on_success(db_session) -> None:
@@ -54,4 +58,14 @@ async def test_ai_summary_degrades_gracefully_when_ai_fails(db_session) -> None:
     assert body["ai_summary_error"] is not None
     assert "rule_based_recommendations" in body
 
+    app.dependency_overrides.clear()
+
+
+async def test_ai_summary_requires_authentication(db_session) -> None:
+    app.dependency_overrides[get_db] = lambda: db_session
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as client:
+        response = await client.post("/ai/summary")
+
+    assert response.status_code == 401
     app.dependency_overrides.clear()

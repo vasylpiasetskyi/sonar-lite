@@ -6,11 +6,12 @@ import pytest
 from app.models.metric import MetricType
 from app.repositories.metric_repository import MetricRepository
 from app.schemas.metric import MetricCreate, MetricUpdate
+from tests.auth_helpers import create_test_user_id
 
 
 async def test_create_persists_metric(db_session) -> None:
     repo = MetricRepository(db_session)
-    user_id = uuid.uuid4()
+    user_id = await create_test_user_id(db_session)
 
     metric = await repo.create(
         user_id,
@@ -31,7 +32,7 @@ async def test_get_returns_none_for_missing_metric(db_session) -> None:
 
 async def test_get_returns_none_for_wrong_user(db_session) -> None:
     repo = MetricRepository(db_session)
-    user_id = uuid.uuid4()
+    user_id = await create_test_user_id(db_session)
     other_user_id = uuid.uuid4()
 
     metric = await repo.create(
@@ -47,7 +48,7 @@ async def test_get_returns_none_for_wrong_user(db_session) -> None:
 
 async def test_list_filters_by_metric_type_and_paginates(db_session) -> None:
     repo = MetricRepository(db_session)
-    user_id = uuid.uuid4()
+    user_id = await create_test_user_id(db_session)
     now = datetime.now(timezone.utc)
 
     for i in range(3):
@@ -73,7 +74,7 @@ async def test_list_filters_by_metric_type_and_paginates(db_session) -> None:
 
 async def test_update_changes_value(db_session) -> None:
     repo = MetricRepository(db_session)
-    user_id = uuid.uuid4()
+    user_id = await create_test_user_id(db_session)
 
     metric = await repo.create(
         user_id,
@@ -96,7 +97,7 @@ async def test_update_returns_none_for_missing_metric(db_session) -> None:
 
 async def test_delete_removes_metric(db_session) -> None:
     repo = MetricRepository(db_session)
-    user_id = uuid.uuid4()
+    user_id = await create_test_user_id(db_session)
 
     metric = await repo.create(
         user_id,
@@ -129,7 +130,7 @@ async def test_average_returns_none_when_no_data(db_session) -> None:
 
 async def test_average_computes_mean_within_window(db_session) -> None:
     repo = MetricRepository(db_session)
-    user_id = uuid.uuid4()
+    user_id = await create_test_user_id(db_session)
     now = datetime.now(timezone.utc)
 
     await repo.create(
@@ -148,7 +149,7 @@ async def test_average_computes_mean_within_window(db_session) -> None:
 
 async def test_average_excludes_entries_outside_window(db_session) -> None:
     repo = MetricRepository(db_session)
-    user_id = uuid.uuid4()
+    user_id = await create_test_user_id(db_session)
     now = datetime.now(timezone.utc)
 
     await repo.create(
@@ -167,7 +168,7 @@ async def test_average_excludes_entries_outside_window(db_session) -> None:
 
 async def test_latest_returns_most_recent_entry(db_session) -> None:
     repo = MetricRepository(db_session)
-    user_id = uuid.uuid4()
+    user_id = await create_test_user_id(db_session)
     now = datetime.now(timezone.utc)
 
     await repo.create(

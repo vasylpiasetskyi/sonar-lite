@@ -10,9 +10,10 @@ FastAPI backend, layered `router → service → repository → PostgreSQL`, no 
 
 ## Features
 
-- `POST /metrics`, `GET /metrics` (filter + pagination), `GET /metrics/{id}`, `PATCH /metrics/{id}`, `DELETE /metrics/{id}` — CRUD for the 5 tracked health metrics (weight, sleep, heart rate, steps, water). See [docs/BUSINESS_RULES.md](docs/BUSINESS_RULES.md).
-- `GET /health`, `GET /health/db` — liveness and DB-connectivity checks.
-- `GET /dashboard` — latest reading, 7d/30d averages + trend, and an overall health score per metric, for the demo user. `ai_summary` is always `null` here (see `POST /ai/summary` below).
+- `POST /auth/register`, `POST /auth/login` — email/password accounts, JWT bearer token (`Authorization: Bearer <token>`). Registering logs you in immediately.
+- `POST /metrics`, `GET /metrics` (filter + pagination), `GET /metrics/{id}`, `PATCH /metrics/{id}`, `DELETE /metrics/{id}` — CRUD for the 5 tracked health metrics (weight, sleep, heart rate, steps, water), scoped to the authenticated user. See [docs/BUSINESS_RULES.md](docs/BUSINESS_RULES.md).
+- `GET /health`, `GET /health/db` — liveness and DB-connectivity checks (public, no auth required).
+- `GET /dashboard` — latest reading, 7d/30d averages + trend, and an overall health score per metric, for the authenticated user. `ai_summary` is always `null` here (see `POST /ai/summary` below).
 - `POST /ai/summary` — rule-based recommendations (always returned) plus an on-demand, LLM-generated summary. Uses a mock AI provider by default (no `OPENAI_API_KEY` configured yet); degrades gracefully to `ai_summary: null` with `ai_summary_error` set if generation fails, rather than failing the request.
 
 ## How to Run
@@ -54,7 +55,7 @@ Open `http://localhost:5173`. The backend must be running separately (`docker co
 
 ## Trade-offs
 
-- No real authentication yet — every request uses a single hardcoded demo user id. Fine for a personal MVP, would need real accounts before this could serve more than one user.
+- Auth is intentionally minimal: no password reset, no email verification, no refresh tokens — a single 24h JWT per login. Fine for a personal MVP; would need hardening before real multi-user production use.
 - Business-rule thresholds (sleep, heart rate, etc. from [docs/BUSINESS_RULES.md](docs/BUSINESS_RULES.md)) are not yet enforced anywhere — Sprint 1 only validates that values are plausible numbers. Analytics and recommendations land in Sprint 2/3.
 - Tests run against a real Postgres instance (not SQLite) to keep UUID/enum behavior realistic, which means a database must be running to run the test suite — slightly more setup than a pure-unit suite, judged worth it for this project's goals.
 

@@ -81,3 +81,15 @@ export const METRIC_UNITS: Record<MetricType, string> = {
   steps: 'steps',
   water: 'L',
 }
+
+export interface UserRead {
+  id: string
+  email: string
+  created_at: string
+}
+
+export interface AuthResponse {
+  user: UserRead
+  access_token: string
+  token_type: string
+}

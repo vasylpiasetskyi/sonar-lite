@@ -1,3 +1,4 @@
+import { clearAuthToken } from '../api/client'
 import { useDashboard } from '../api/metrics'
 import { METRIC_TYPES } from '../api/types'
 import AddMetricForm from '../components/AddMetricForm'
@@ -8,7 +9,11 @@ import LoadingState from '../components/LoadingState'
 import MetricCard from '../components/MetricCard'
 import MetricTrendChart from '../components/MetricTrendChart'
 
-function DashboardPage() {
+interface DashboardPageProps {
+  onLogout: () => void
+}
+
+function DashboardPage({ onLogout }: DashboardPageProps) {
   const { data, isLoading, isError } = useDashboard()
 
   if (isLoading) {
@@ -21,9 +26,21 @@ function DashboardPage() {
 
   return (
     <div className="mx-auto max-w-5xl space-y-6 p-6">
-      <header>
-        <h1 className="text-2xl font-bold text-slate-900">Sonar Lite</h1>
-        <p className="text-sm text-slate-500">Your health, at a glance.</p>
+      <header className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-slate-900">Sonar Lite</h1>
+          <p className="text-sm text-slate-500">Your health, at a glance.</p>
+        </div>
+        <button
+          type="button"
+          onClick={() => {
+            clearAuthToken()
+            onLogout()
+          }}
+          className="rounded border border-slate-300 px-3 py-1.5 text-sm text-slate-600"
+        >
+          Log out
+        </button>
       </header>
 
       <HealthScoreCard healthScore={data.health_score} />
