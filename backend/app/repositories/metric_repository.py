@@ -1,4 +1,5 @@
 import uuid
+from datetime import datetime
 
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -79,3 +80,29 @@ class MetricRepository:
         await self._session.delete(metric)
         await self._session.commit()
         return True
+
+    async def average(
+        self,
+        user_id: uuid.UUID,
+        metric_type: MetricType,
+        start: datetime,
+        end: datetime,
+    ) -> float | None:
+        result = await self._session.execute(
+            select(func.avg(Metric.value)).where(
+                Metric.user_id == user_id,
+                Metric.metric_type == metric_type,
+                Metric.recorded_at >= start,
+                Metric.recorded_at < end,
+            )
+        )
+        return result.scalar_one_or_none()
+
+    async def latest(self, user_id: uuid.UUID, metric_type: MetricType) -> Metric | None:
+        result = await self._session.execute(
+            select(Metric)
+            .where(Metric.user_id == user_id, Metric.metric_type == metric_type)
+            .order_by(Metric.recorded_at.desc())
+            .limit(1)
+        )
+        return result.scalar_one_or_none()

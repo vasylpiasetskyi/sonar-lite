@@ -1,6 +1,8 @@
 import uuid
 from datetime import datetime, timedelta, timezone
 
+import pytest
+
 from app.models.metric import MetricType
 from app.repositories.metric_repository import MetricRepository
 from app.schemas.metric import MetricCreate, MetricUpdate
@@ -114,3 +116,78 @@ async def test_delete_returns_false_for_missing_metric(db_session) -> None:
     repo = MetricRepository(db_session)
     result = await repo.delete(uuid.uuid4(), uuid.uuid4())
     assert result is False
+
+
+async def test_average_returns_none_when_no_data(db_session) -> None:
+    repo = MetricRepository(db_session)
+    now = datetime.now(timezone.utc)
+
+    result = await repo.average(uuid.uuid4(), MetricType.SLEEP, now - timedelta(days=7), now)
+
+    assert result is None
+
+
+async def test_average_computes_mean_within_window(db_session) -> None:
+    repo = MetricRepository(db_session)
+    user_id = uuid.uuid4()
+    now = datetime.now(timezone.utc)
+
+    await repo.create(
+        user_id,
+        MetricCreate(metric_type=MetricType.SLEEP, value=6.0, recorded_at=now - timedelta(days=1)),
+    )
+    await repo.create(
+        user_id,
+        MetricCreate(metric_type=MetricType.SLEEP, value=8.0, recorded_at=now - timedelta(days=3)),
+    )
+
+    result = await repo.average(user_id, MetricType.SLEEP, now - timedelta(days=7), now)
+
+    assert result == pytest.approx(7.0)
+
+
+async def test_average_excludes_entries_outside_window(db_session) -> None:
+    repo = MetricRepository(db_session)
+    user_id = uuid.uuid4()
+    now = datetime.now(timezone.utc)
+
+    await repo.create(
+        user_id,
+        MetricCreate(metric_type=MetricType.STEPS, value=5000, recorded_at=now - timedelta(days=3)),
+    )
+    await repo.create(
+        user_id,
+        MetricCreate(metric_type=MetricType.STEPS, value=9000, recorded_at=now - timedelta(days=10)),
+    )
+
+    result = await repo.average(user_id, MetricType.STEPS, now - timedelta(days=7), now)
+
+    assert result == pytest.approx(5000)
+
+
+async def test_latest_returns_most_recent_entry(db_session) -> None:
+    repo = MetricRepository(db_session)
+    user_id = uuid.uuid4()
+    now = datetime.now(timezone.utc)
+
+    await repo.create(
+        user_id,
+        MetricCreate(metric_type=MetricType.WATER, value=1.5, recorded_at=now - timedelta(days=2)),
+    )
+    newest = await repo.create(
+        user_id,
+        MetricCreate(metric_type=MetricType.WATER, value=2.5, recorded_at=now - timedelta(hours=1)),
+    )
+
+    result = await repo.latest(user_id, MetricType.WATER)
+
+    assert result is not None
+    assert result.id == newest.id
+
+
+async def test_latest_returns_none_when_no_data(db_session) -> None:
+    repo = MetricRepository(db_session)
+
+    result = await repo.latest(uuid.uuid4(), MetricType.WEIGHT)
+
+    assert result is None
