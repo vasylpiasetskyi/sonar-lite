@@ -8,7 +8,7 @@ It is **not** a medical device and **not** a diagnostic tool. Every AI-generated
 
 ## User
 
-Single demo user for MVP. No real registration flow — a fake or hardcoded auth is acceptable.
+Single demo user for MVP (Sprints 1-5). No real registration flow — a fake or hardcoded auth is acceptable. Real authentication is deferred to Sprint 6 — see [ROADMAP.md](ROADMAP.md).
 
 ## Core value loop
 

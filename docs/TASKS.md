@@ -38,3 +38,10 @@
 - [ ] Unit tests for services
 - [ ] API tests for routers
 - [ ] AI layer mocked in tests
+
+## Sprint 6 — Authentication
+
+- [ ] User registration/login (real accounts, password hashing or OAuth)
+- [ ] Session/JWT-based request authentication
+- [ ] Replace `DEMO_USER_ID` with the authenticated user's id across services and routers
+- [ ] Migration plan for metrics currently recorded under the demo user
