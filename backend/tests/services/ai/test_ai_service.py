@@ -40,3 +40,16 @@ async def test_generate_summary_raises_after_retry_also_fails() -> None:
 
     with pytest.raises(AISummaryGenerationError):
         await service.generate_summary(metrics, [])
+
+
+class _RaisingProvider:
+    async def complete(self, prompt: str) -> str:
+        raise ConnectionError("upstream AI provider unreachable")
+
+
+async def test_generate_summary_raises_ai_error_when_provider_itself_fails() -> None:
+    service = AIService(_RaisingProvider())
+    metrics = {MetricType.SLEEP: MetricAnalytics(avg_7d=7.0, avg_30d=7.0, trend=None)}
+
+    with pytest.raises(AISummaryGenerationError):
+        await service.generate_summary(metrics, [])

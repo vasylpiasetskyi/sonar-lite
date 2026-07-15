@@ -8,7 +8,7 @@ from app.core.config import settings
 
 @pytest.fixture
 async def db_session() -> AsyncIterator[AsyncSession]:
-    engine = create_async_engine(settings.database_url)
+    engine = create_async_engine(settings.test_database_url)
     connection = await engine.connect()
     transaction = await connection.begin()
     session = AsyncSession(

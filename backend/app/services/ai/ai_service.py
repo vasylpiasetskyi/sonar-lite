@@ -24,10 +24,10 @@ class AIService:
         prompt = build_summary_prompt(metrics, recommendations)
 
         for _ in range(2):
-            raw_response = await self._provider.complete(prompt)
             try:
+                raw_response = await self._provider.complete(prompt)
                 content = AISummaryContent.model_validate_json(raw_response)
-            except ValueError:
+            except Exception:
                 continue
             return AISummary(**content.model_dump(), disclaimer=DISCLAIMER_TEXT)
 

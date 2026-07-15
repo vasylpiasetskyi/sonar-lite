@@ -25,13 +25,22 @@ This brings up PostgreSQL and the backend (migrations run automatically on conta
 
 ## Running Tests Locally
 
+Tests run against their own `sonar_lite_test` database — completely separate from
+the `sonar_lite` database used for local dev/debugging, so running the suite never
+reads or clobbers your own dev data.
+
 ```bash
 docker compose up -d db
 cd backend
 uv sync
-uv run alembic upgrade head
+uv run alembic upgrade head                                       # migrates sonar_lite (dev)
+DATABASE_URL=postgresql+asyncpg://sonar:sonar@localhost:5432/sonar_lite_test \
+  uv run alembic upgrade head                                     # migrates sonar_lite_test
 uv run pytest
 ```
+
+`sonar_lite_test` is created automatically on the `db` container's first startup
+(via `docker/init-test-db.sql`) — no manual `CREATE DATABASE` needed for a fresh clone.
 
 ## Trade-offs
 
