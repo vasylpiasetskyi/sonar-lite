@@ -30,8 +30,8 @@
 
 ## Sprint 4 — Charts & frontend
 
-- [ ] React app scaffold, dashboard, forms
-- [ ] Trend charts
+- [x] React app scaffold, dashboard, forms
+- [x] Trend charts
 
 ## Sprint 5 — Tests
 

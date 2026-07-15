@@ -2,7 +2,7 @@
 
 A simplified AI-powered health platform, built as a simulation of working inside an AI-native HealthTech startup (Sonar Health) with Claude Code as an AI pair-programmer.
 
-**Status:** Sprint 3 complete — Health Metrics CRUD, Dashboard & Analytics, and AI summary generation are live.
+**Status:** Sprint 4 complete — full backend (CRUD, Dashboard & Analytics, AI summary) plus a React dashboard frontend are live.
 
 ## Architecture
 
@@ -41,6 +41,16 @@ uv run pytest
 
 `sonar_lite_test` is created automatically on the `db` container's first startup
 (via `docker/init-test-db.sql`) — no manual `CREATE DATABASE` needed for a fresh clone.
+
+## Frontend
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Open `http://localhost:5173`. The backend must be running separately (`docker compose up -d` from the repo root) — CORS is configured for `http://localhost:5173` specifically.
 
 ## Trade-offs
 
